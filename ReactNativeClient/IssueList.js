@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {act, useState} from 'react';
 import { Table, TableWrapper, Row, Rows, Col, Cols, Cell } from 'react-native-table-component';
 
 import {
@@ -450,7 +450,7 @@ export default class IssueList extends React.Component {
   constructor() {
     super();
     /****** Q1: Start Coding here. Add state to hold the issues and active view******/
-    this.state = { issues: [], view: 'issues' };
+    this.state = { issues: [], activeView: 'issues' };
     this.createIssue = this.createIssue.bind(this);
     this.handleNavigate = this.handleNavigate.bind(this);
     /****** Q1: Code Ends here ******/
