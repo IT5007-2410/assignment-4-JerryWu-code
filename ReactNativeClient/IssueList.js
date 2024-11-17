@@ -302,7 +302,6 @@ function IssueRow(props) {
         status, // default to 'New'
         effort: parseInt(effort, 10),
         due: due ? new Date(due) : null, // set to null if empty
-        created: new Date(), // automatically set to current date
       };
   
       // call from parent component
