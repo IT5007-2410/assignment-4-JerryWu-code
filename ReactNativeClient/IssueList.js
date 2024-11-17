@@ -65,11 +65,28 @@ import {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  header: { height: 50, backgroundColor: '#537791' },
-  text: { textAlign: 'center' },
-  dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' },
+  container: { 
+    flex: 1, 
+    padding: 16,
+    paddingTop: 30, 
+    backgroundColor: '#fff' 
+  },
+  header: { 
+    height: 50, 
+    backgroundColor: '#537791' 
+  },
+  text: { 
+    textAlign: 'center',
+    color: '#fff',
+    fontWeight: 'bold',
+  },
+  dataWrapper: { 
+    marginTop: -1 
+  },
+  row: { 
+    height: 40, 
+    backgroundColor: '#E7E6E1' 
+  },
   filterContainer: {
       padding: 10,
       backgroundColor: '#f9f9f9',
@@ -94,11 +111,25 @@ const width= [40,80,80,80,80,80,200];
 function IssueRow(props) {
     const issue = props.issue;
     {/****** Q2: Coding Starts here. Create a row of data in a variable******/}
+    const rowData = [
+      issue.id,
+      issue.title,
+      issue.status,
+      issue.owner,
+      issue.created.toISOString().slice(0, 10), // ensure date is in the format YYYY-MM-DD
+      issue.effort,
+      issue.due ? issue.due.toISOString().slice(0, 10) : 'N/A', // handle null due date
+    ];
     {/****** Q2: Coding Ends here.******/}
     return (
       <>
       {/****** Q2: Start Coding here. Add Logic to render a row  ******/}
-      
+        <Row 
+          data={rowData} 
+          style={styles.row} 
+          textStyle={styles.text} 
+          widthArr={width} 
+        />
       {/****** Q2: Coding Ends here. ******/}  
       </>
     );
@@ -111,14 +142,26 @@ function IssueRow(props) {
     );
 
     {/****** Q2: Start Coding here. Add Logic to initalize table header  ******/}
-
+    const tableHead = ['ID', 'Title', 'Status', 'Owner', 'Created', 'Effort', 'Due Date'];
     {/****** Q2: Coding Ends here. ******/}
     
     
     return (
     <View style={styles.container}>
     {/****** Q2: Start Coding here to render the table header/rows.**********/}
-    
+
+      {/* Render the table header */}
+      <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+        <Row data={tableHead} style={styles.header} textStyle={styles.text} />
+      </Table>
+
+      {/* Render the table rows */}
+      <ScrollView style={styles.dataWrapper}>
+        <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
+          {issueRows}
+        </Table>
+      </ScrollView>
+
     {/****** Q2: Coding Ends here. ******/}
     </View>
     );
@@ -225,6 +268,9 @@ export default class IssueList extends React.Component {
         {/****** Q1: Code ends here ******/}
 
         {/****** Q2: Start Coding here. ******/}
+        <View>
+            <IssueTable issues={this.state.issues} />
+        </View>
         {/****** Q2: Code ends here ******/}
 
         
