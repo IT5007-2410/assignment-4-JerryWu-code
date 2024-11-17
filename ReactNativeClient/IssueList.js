@@ -229,11 +229,25 @@ function IssueRow(props) {
       /****** Q3: Start Coding here. Create an issue from state variables and call createIssue. Also, clear input field in front-end******/
       const { owner, title, status, effort, due } = this.state;
 
+      // alert if required fields are empty
       if (!owner || !title || !effort) {
         alert('Please fill in all required fields!');
         return;
       }
   
+      // alert if effort is not a number
+      if (isNaN(effort)) {
+        alert('Effort must be a valid number!');
+        return;
+      }
+
+      // alert if due date is not in the correct format
+      const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // YYYY-MM-DD
+      if (due && !dateRegex.test(due)) {
+        alert('Due Date must be in the format YYYY-MM-DD!');
+        return;
+      }
+
       const newIssue = {
         owner,
         title,
