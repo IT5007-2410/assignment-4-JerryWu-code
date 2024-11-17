@@ -23,7 +23,7 @@ import {
   async function graphQLFetch(query, variables = {}) {
     try {
         /****** Q4: Start Coding here. State the correct IP/port******/
-        const response = await fetch('http://192.168.10.122:3000/graphql', {
+        const response = await fetch('http://10.0.2.2:3000/graphql', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify({ query, variables })
@@ -330,79 +330,58 @@ function IssueRow(props) {
     }
   }
 
-class BlackList extends React.Component {
-    constructor() {   
+  class BlackList extends React.Component {
+    constructor() {
       super();
       this.handleSubmit = this.handleSubmit.bind(this);
-        /****** Q4: Start Coding here. Create State to hold inputs******/
-      this.state = {
-        owner: '',
-      };
-      this.handleOwnerChange = this.handleOwnerChange.bind(this);
-        /****** Q4: Code Ends here. ******/
+      /****** Q4: Start Coding here. Create State to hold inputs******/
+      this.state = { owner: '' };
+      this.handleTextInputChange = this.handleTextInputChange.bind(this);
+      /****** Q4: Code Ends here. ******/
     }
+  
     /****** Q4: Start Coding here. Add functions to hold/set state input based on changes in TextInput******/
-    handleOwnerChange(value) {
-      this.setState({ owner: value });
+    handleTextInputChange(text) {
+      this.setState({ owner: text });
     }
     /****** Q4: Code Ends here. ******/
-
+  
     async handleSubmit() {
-    /****** Q4: Start Coding here. Create an issue from state variables and issue a query. Also, clear input field in front-end******/
-      const { owner } = this.state;
-
-      // verify owner is not empty
-      if (!owner) {
-        alert('Please enter an owner to blacklist!');
+      /****** Q4: Start Coding here. Create an issue from state variables and issue a query. Also, clear input field in front-end******/
+      if (this.state.owner === '') {
+        alert('Owner name cannot be blank');
         return;
       }
-
-      const query = `
-        mutation addtoBlacklist($owner: String!) {
-          addtoBlacklist(owner: $owner) {
-            owner
-          }
-        }
-      `;
-
-      // call the mutation 
-      try {
-        const result = await graphQLFetch(query, { owner });
-        if (result && result.addToBlacklist) {
-          alert(`Success! "${owner}" has been added to the blacklist.`);
-        } else {
-          alert(`Failed to add "${owner}" to blacklist. Please try again.`);
-        }
-      } catch (error) {
-        alert(`Failed to add "${owner}" to blacklist: ${error.message}`);
-      }
-
-      // clear input field
+  
+      const mutation = `mutation addToBlacklist($nameInput: String!) {
+        addToBlacklist(nameInput: $nameInput)
+      }`;
+  
+      await graphQLFetch(mutation, { nameInput: this.state.owner });
+  
+      alert(`Success! "${this.state.owner}" has been blacklisted`);
       this.setState({ owner: '' });
-    /****** Q4: Code Ends here. ******/
+      /****** Q4: Code Ends here. ******/
     }
-
+  
     render() {
-    return (
+      return (
         <View>
-        {/****** Q4: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
-        <Text style={styles.blacklistLabel}>Add Owner to Blacklist</Text>
-
-        {/* input field */}
-        <TextInput
-          style={styles.blacklistInput}
-          placeholder="Owner name"
-          value={this.state.owner}
-          onChangeText={this.handleOwnerChange}
-        />
-
-        {/* submit button */}
-        <Button title="Add to Blacklist" onPress={this.handleSubmit} />
-        {/****** Q4: Code Ends here. ******/}
+          {/****** Q4: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+          <Text style={styles.blacklistLabel}>Add Owner to Blacklist</Text>
+          <TextInput
+            style={styles.blacklistInput}
+            placeholder="Owner name"
+            value={this.state.owner}
+            onChangeText={this.handleTextInputChange}
+          />
+          <Button title="Add to Blacklist" onPress={this.handleSubmit} />
+          {/****** Q4: Code Ends here. ******/}
         </View>
-    );
+      );
     }
-}
+  }
+  
 
 export default class IssueList extends React.Component {
     constructor() {
