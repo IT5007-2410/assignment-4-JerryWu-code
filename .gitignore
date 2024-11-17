@@ -1,0 +1,5 @@
+# ignore node_mondules
+node_modules
+
+# package under ReactNativeServer
+/package-lock.json

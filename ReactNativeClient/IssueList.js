@@ -47,25 +47,47 @@ import {
     }
   }
 
-class IssueFilter extends React.Component {
+  class IssueFilter extends React.Component {
     render() {
       return (
-        <>
-        {/****** Q1: Start Coding here. ******/}
-
+        <View>
+        {/* ***** Q1: Start Coding here. ***** Create IssueFilter dummy component */}
+          <Text style={styles.filterLabel}>Filter Issues:</Text>
+          <TextInput
+            style={styles.filterInput}
+            placeholder="Enter filter criteria (e.g., Owner or Status)"
+          />
+          <Button title="Apply Filter" onPress={() => alert('Filter applied!')} />
         {/****** Q1: Code ends here ******/}
-        </>
+        </View>
       );
     }
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
   header: { height: 50, backgroundColor: '#537791' },
   text: { textAlign: 'center' },
   dataWrapper: { marginTop: -1 },
-  row: { height: 40, backgroundColor: '#E7E6E1' }
-  });
+  row: { height: 40, backgroundColor: '#E7E6E1' },
+  filterContainer: {
+      padding: 10,
+      backgroundColor: '#f9f9f9',
+      marginBottom: 15,
+      borderRadius: 5,
+  },
+  filterLabel: {
+      fontSize: 16,
+      marginBottom: 5,
+  },
+  filterInput: {
+      borderWidth: 1,
+      borderColor: '#ddd',
+      padding: 8,
+      marginBottom: 10,
+      borderRadius: 5,
+  },
+});
 
 const width= [40,80,80,80,80,80,200];
 
