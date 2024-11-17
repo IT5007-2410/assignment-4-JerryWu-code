@@ -31,6 +31,7 @@ import {
         /****** Q4: Code Ends here******/
       });
       const body = await response.text();
+      console.log("Response body: ", body);
       const result = JSON.parse(body, jsonDateReviver);
   
       if (result.errors) {
@@ -83,26 +84,59 @@ const NavigationBar = ({ onNavigate }) => {
 
 const styles = StyleSheet.create({
   container: { 
-    flex: 1, 
-    padding: 16,
+    flex: 1,
     paddingTop: 30, 
-    backgroundColor: '#fff' 
+    backgroundColor: '#f8f9fa' 
   },
-  header: { 
-    height: 50, 
-    backgroundColor: '#537791' 
-  },
-  text: { 
-    textAlign: 'center',
-    color: '#fff',
+  title: {
+    fontSize: 24,
     fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#333',
+    textAlign: 'center',
+  },
+  tableBorder: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+  },
+  header: {
+    height: 50,
+    backgroundColor: '#4CAF50',
+    borderBottomWidth: 2,
+    borderColor: '#ddd',
+  },
+  headerText: {
+    fontWeight: 'bold',
+    color: '#fff',
+    textAlign: 'center',
+    flexWrap: 'wrap',
+  },
+  row: {
+    paddingVertical: 5,
+    paddingHorizontal: 10,
+    minHeight: 60,
+    justifyContent: 'center',
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+  },
+  rowEven: {
+    backgroundColor: '#E7E6E1',
+  },
+  rowOdd: {
+    backgroundColor: '#F4F4F4',
+  },
+  rowText: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    flexWrap: 'wrap',
+  },
+  rowBorder: {
+    borderBottomWidth: 1,
+    borderColor: '#eee',
   },
   dataWrapper: { 
     marginTop: -1 
-  },
-  row: { 
-    height: 40, 
-    backgroundColor: '#E7E6E1' 
   },
   filterContainer: {
       padding: 10,
@@ -170,9 +204,10 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: 'bold',
   },
+
 });
 export default NavigationBar;
-const width= [40,80,80,80,80,80,200];
+const width=[15,60,50,60,40,60,100];
 
 function IssueRow(props) {
     const issue = props.issue;
@@ -181,9 +216,9 @@ function IssueRow(props) {
       issue.id,
       issue.status,
       issue.owner,
-      issue.created ? issue.created.toDateString() : '', // handle null created date
+      issue.created?.toDateString(), // handle null created date
       issue.effort,
-      issue.due ? issue.due.toDateString() : 'N/A', // handle null due date
+      issue.due?.toDateString(), // handle null due date
       issue.title,
     ];
     {/****** Q2: Coding Ends here.******/}
@@ -216,18 +251,17 @@ function IssueRow(props) {
     <View style={styles.container}>
     {/****** Q2: Start Coding here to render the table header/rows.**********/}
 
-      {/* Render the table header */}
-      <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
-        <Row data={tableHead} style={styles.header} textStyle={styles.text} />
+      <Text style={styles.title}>Issues Table</Text>
+      <Table borderStyle={styles.tableBorder}>
+        <Row
+          data={tableHead}
+          style={styles.header}
+          textStyle={styles.headerText}
+          borderStyle={styles.tableBorder}
+          widthArr={width}
+        />
+        {issueRows}
       </Table>
-
-      {/* Render the table rows */}
-      <ScrollView style={styles.dataWrapper}>
-        <Table borderStyle={{ borderWidth: 1, borderColor: '#c8e1ff' }}>
-          {issueRows}
-        </Table>
-      </ScrollView>
-
     {/****** Q2: Coding Ends here. ******/}
     </View>
     );
@@ -440,7 +474,12 @@ export default class IssueList extends React.Component {
     const data = await graphQLFetch(query);
     console.log('Fetched data:', data);
     if (data) {
-      this.setState({ issues: data.issueList });
+      const issues = data.issueList.map(issue => ({
+        ...issue,
+        created: issue.created ? new Date(issue.created) : null,
+        due: issue.due ? new Date(issue.due) : null,
+      }));
+      this.setState({ issues });
     }
     /****** Q1: Code Ends here ******/
   }
@@ -468,7 +507,7 @@ export default class IssueList extends React.Component {
   }
 
   render() {
-    const { activeView, issues } = this.state;
+    const { activeView } = this.state;
 
     return (
       <>
