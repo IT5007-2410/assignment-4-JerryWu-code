@@ -10,6 +10,7 @@ import {
     TextInput,
     Button,
     useColorScheme,
+    Pressable,
     View,
   } from 'react-native';
 
@@ -63,6 +64,22 @@ import {
       );
     }
 }
+
+const NavigationBar = ({ onNavigate }) => {
+  return (
+    <View style={styles.navBar}>
+      <Pressable style={styles.navItem} onPress={() => onNavigate('issues')}>
+        <Text style={styles.navText}>Issues</Text>
+      </Pressable>
+      <Pressable style={styles.navItem} onPress={() => onNavigate('addIssue')}>
+        <Text style={styles.navText}>Add Issue</Text>
+      </Pressable>
+      <Pressable style={styles.navItem} onPress={() => onNavigate('blacklist')}>
+        <Text style={styles.navText}>Blacklist</Text>
+      </Pressable>
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
   container: { 
@@ -140,8 +157,21 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderRadius: 5,
   },
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: '#007BFF',
+    padding: 10,
+  },
+  navItem: {
+    padding: 10,
+  },
+  navText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
 });
-
+export default NavigationBar;
 const width= [40,80,80,80,80,80,200];
 
 function IssueRow(props) {
@@ -384,17 +414,23 @@ function IssueRow(props) {
   
 
 export default class IssueList extends React.Component {
-    constructor() {
-        super();
-        this.state = { issues: [] };
-        this.createIssue = this.createIssue.bind(this);
-    }
-    
-    componentDidMount() {
-    this.loadData();
-    }
+  constructor() {
+    super();
+    /****** Q1: Start Coding here. Add state to hold the issues and active view******/
+    this.state = { issues: [], activeView: 'issues' };
+    this.createIssue = this.createIssue.bind(this);
+    this.handleNavigate = this.handleNavigate.bind(this);
+    /****** Q1: Code Ends here ******/
+  }
 
-    async loadData() {
+  componentDidMount() {
+    /****** Q1: Start Coding here. Load issues when the component is mounted******/
+    this.loadData();
+    /****** Q1: Code Ends here ******/
+  }
+
+  async loadData() {
+    /****** Q1: Start Coding here. Create a query to fetch issues and update state******/
     const query = `query {
         issueList {
         id title status owner
@@ -404,11 +440,13 @@ export default class IssueList extends React.Component {
 
     const data = await graphQLFetch(query);
     if (data) {
-        this.setState({ issues: data.issueList });
+      this.setState({ issues: data.issueList });
     }
-    }
+    /****** Q1: Code Ends here ******/
+  }
 
-    async createIssue(issue) {
+  async createIssue(issue) {
+    /****** Q3: Start Coding here. Create a mutation to add an issue and reload issues******/
     const query = `mutation issueAdd($issue: IssueInputs!) {
         issueAdd(issue: $issue) {
         id
@@ -417,39 +455,51 @@ export default class IssueList extends React.Component {
 
     const data = await graphQLFetch(query, { issue });
     if (data) {
-        this.loadData();
+      this.loadData();
     }
-    }
-    
-    
-    render() {
+    /****** Q3: Code Ends here ******/
+  }
+
+  handleNavigate(view) {
+    /****** Q5: Start Coding here. Handle navigation between views******/
+    this.setState({ activeView: view });
+    /****** Q5: Code Ends here ******/
+  }
+
+  render() {
+    const { activeView, issues } = this.state;
+
     return (
       <>
-        {/****** Q1: Start Coding here. ******/}
-        <View>
+        {/****** Q5: Start Coding here. Add a navigation bar to switch views ******/}
+        <NavigationBar onNavigate={this.handleNavigate} />
+        {/****** Q5: Code Ends here. ******/
+
+        /* Conditional Rendering Based on Active View */}
+        {activeView === 'issues' && (
+          <View>
+            {/****** Q1: Start Coding here. Render IssueFilter and IssueTable ******/}
             <IssueFilter />
-        </View>
-        {/****** Q1: Code ends here ******/}
-
-        {/****** Q2: Start Coding here. ******/}
-        <View>
-            <IssueTable issues={this.state.issues} />
-        </View>
-        {/****** Q2: Code ends here ******/}
-        
-        {/****** Q3: Start Coding here. ******/}
-        <View>
+            <IssueTable issues={issues} />
+            {/****** Q1: Code Ends here. ******/}
+          </View>
+        )}
+        {activeView === 'addIssue' && (
+          <View>
+            {/****** Q3: Start Coding here. Render IssueAdd component ******/}
             <IssueAdd createIssue={this.createIssue} />
-        </View>
-        {/****** Q3: Code Ends here. ******/}
-
-        {/****** Q4: Start Coding here. ******/}
-        <View>
+            {/****** Q3: Code Ends here. ******/}
+          </View>
+        )}
+        {activeView === 'blacklist' && (
+          <View>
+            {/****** Q4: Start Coding here. Render BlackList component ******/}
             <BlackList />
-        </View>
-        {/****** Q4: Code Ends here. ******/}
+            {/****** Q4: Code Ends here. ******/}
+          </View>
+        )}
       </>
-      
     );
   }
 }
+  
