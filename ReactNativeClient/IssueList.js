@@ -104,6 +104,24 @@ const styles = StyleSheet.create({
       marginBottom: 10,
       borderRadius: 5,
   },
+  addContainer: {
+    padding: 10,
+    backgroundColor: '#f9f9f9',
+    marginBottom: 15,
+    borderRadius: 5,
+  },
+  addLabel: {
+    fontSize: 18,
+    marginBottom: 10,
+    fontWeight: 'bold',
+  },
+  addInput: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 8,
+    marginBottom: 10,
+    borderRadius: 5,
+  },
 });
 
 const width= [40,80,80,80,80,80,200];
@@ -173,23 +191,109 @@ function IssueRow(props) {
       super();
       this.handleSubmit = this.handleSubmit.bind(this);
       /****** Q3: Start Coding here. Create State to hold inputs******/
+      this.state = {
+        owner: '',
+        title: '',
+        status: 'New',
+        effort: '',
+        due: '',
+      };
+    
+      this.handleOwnerChange = this.handleOwnerChange.bind(this);
+      this.handleTitleChange = this.handleTitleChange.bind(this);
+      this.handleEffortChange = this.handleEffortChange.bind(this);
+      this.handleDueChange = this.handleDueChange.bind(this);
+      this.handleSubmit = this.handleSubmit.bind(this);
       /****** Q3: Code Ends here. ******/
     }
   
     /****** Q3: Start Coding here. Add functions to hold/set state input based on changes in TextInput******/
+    handleOwnerChange(value) {
+      this.setState({ owner: value });
+    }
+  
+    handleTitleChange(value) {
+      this.setState({ title: value });
+    }
+  
+    handleEffortChange(value) {
+      this.setState({ effort: value });
+    }
+  
+    handleDueChange(value) {
+      this.setState({ due: value });
+    }
     /****** Q3: Code Ends here. ******/
     
     handleSubmit() {
       /****** Q3: Start Coding here. Create an issue from state variables and call createIssue. Also, clear input field in front-end******/
+      const { owner, title, status, effort, due } = this.state;
+
+      if (!owner || !title || !effort) {
+        alert('Please fill in all required fields!');
+        return;
+      }
+  
+      const newIssue = {
+        owner,
+        title,
+        status, // default to 'New'
+        effort: parseInt(effort, 10),
+        due: due ? new Date(due) : null, // set to null if empty
+        created: new Date(), // automatically set to current date
+      };
+  
+      // call from parent component
+      this.props.createIssue(newIssue);
+  
+      // clear input fields
+      this.setState({
+        owner: '',
+        title: '',
+        status: 'New',
+        effort: '',
+        due: '',
+      });
       /****** Q3: Code Ends here. ******/
     }
-  
+
     render() {
       return (
-          <View>
-          {/****** Q3: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+        <View style={styles.addContainer}>
+        {/****** Q3: Start Coding here. Create TextInput field, populate state variables. Create a submit button, and on submit, trigger handleSubmit.*******/}
+          <Text style={styles.addLabel}>Add a New Issue</Text>
+
+          {/* input fields */}
+          <TextInput
+            style={styles.addInput}
+            placeholder="Owner"
+            value={this.state.owner}
+            onChangeText={this.handleOwnerChange}
+          />
+          <TextInput
+            style={styles.addInput}
+            placeholder="Title"
+            value={this.state.title}
+            onChangeText={this.handleTitleChange}
+          />
+          <TextInput
+            style={styles.addInput}
+            placeholder="Effort"
+            value={this.state.effort}
+            onChangeText={this.handleEffortChange}
+            keyboardType="numeric"
+          />
+          <TextInput
+            style={styles.addInput}
+            placeholder="Due Date (YYYY-MM-DD)"
+            value={this.state.due}
+            onChangeText={this.handleDueChange}
+          />
+
+          {/* submit button */}
+          <Button title="Add Issue" onPress={this.handleSubmit} />
           {/****** Q3: Code Ends here. ******/}
-          </View>
+        </View>
       );
     }
   }
@@ -272,9 +376,11 @@ export default class IssueList extends React.Component {
             <IssueTable issues={this.state.issues} />
         </View>
         {/****** Q2: Code ends here ******/}
-
         
         {/****** Q3: Start Coding here. ******/}
+        <View>
+            <IssueAdd createIssue={this.createIssue} />
+        </View>
         {/****** Q3: Code Ends here. ******/}
 
         {/****** Q4: Start Coding here. ******/}
