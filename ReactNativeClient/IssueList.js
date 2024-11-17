@@ -217,21 +217,23 @@ export default class IssueList extends React.Component {
     
     render() {
     return (
-    <>
-    {/****** Q1: Start Coding here. ******/}
-    {/****** Q1: Code ends here ******/}
+      <>
+        {/****** Q1: Start Coding here. ******/}
+        <View>
+            <IssueFilter />
+        </View>
+        {/****** Q1: Code ends here ******/}
 
+        {/****** Q2: Start Coding here. ******/}
+        {/****** Q2: Code ends here ******/}
 
-    {/****** Q2: Start Coding here. ******/}
-    {/****** Q2: Code ends here ******/}
+        
+        {/****** Q3: Start Coding here. ******/}
+        {/****** Q3: Code Ends here. ******/}
 
-    
-    {/****** Q3: Start Coding here. ******/}
-    {/****** Q3: Code Ends here. ******/}
-
-    {/****** Q4: Start Coding here. ******/}
-    {/****** Q4: Code Ends here. ******/}
-    </>
+        {/****** Q4: Start Coding here. ******/}
+        {/****** Q4: Code Ends here. ******/}
+      </>
       
     );
   }
