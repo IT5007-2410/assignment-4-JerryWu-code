@@ -183,7 +183,7 @@ function IssueRow(props) {
       issue.owner,
       issue.created ? issue.created.toDateString() : '', // handle null created date
       issue.effort,
-      issue.due ? issue.due.toDateString() : '', // handle null due date
+      issue.due ? issue.due.toDateString() : 'N/A', // handle null due date
       issue.title,
     ];
     {/****** Q2: Coding Ends here.******/}
@@ -416,7 +416,7 @@ export default class IssueList extends React.Component {
   constructor() {
     super();
     /****** Q1: Start Coding here. Add state to hold the issues and active view******/
-    this.state = { issues: [], activeView: 'issues' };
+    this.state = { issues: [], view: 'issues' };
     this.createIssue = this.createIssue.bind(this);
     this.handleNavigate = this.handleNavigate.bind(this);
     /****** Q1: Code Ends here ******/
@@ -438,6 +438,7 @@ export default class IssueList extends React.Component {
     }`;
 
     const data = await graphQLFetch(query);
+    console.log('Fetched data:', data);
     if (data) {
       this.setState({ issues: data.issueList });
     }
@@ -480,7 +481,7 @@ export default class IssueList extends React.Component {
           <View>
             {/****** Q1: Start Coding here. Render IssueFilter and IssueTable ******/}
             <IssueFilter />
-            <IssueTable issues={issues} />
+            <IssueTable issues={this.state.issues} />
             {/****** Q1: Code Ends here. ******/}
           </View>
         )}
