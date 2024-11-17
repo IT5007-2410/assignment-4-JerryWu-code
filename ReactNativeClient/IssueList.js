@@ -14,7 +14,7 @@ import {
     View,
   } from 'react-native';
 
-  const dateRegex = new RegExp('^\\d\\d\\d\\d-\\d\\d-\\d\\d');
+  const dateRegex = new RegExp('^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$');
 
   function jsonDateReviver(key, value) {
     if (dateRegex.test(value)) return new Date(value);
@@ -179,12 +179,12 @@ function IssueRow(props) {
     {/****** Q2: Coding Starts here. Create a row of data in a variable******/}
     const rowData = [
       issue.id,
-      issue.title,
       issue.status,
       issue.owner,
-      issue.created.toISOString().slice(0, 10), // ensure date is in the format YYYY-MM-DD
+      issue.created ? issue.created.toDateString() : '', // handle null created date
       issue.effort,
-      issue.due ? issue.due.toISOString().slice(0, 10) : 'N/A', // handle null due date
+      issue.due ? issue.due.toDateString() : '', // handle null due date
+      issue.title,
     ];
     {/****** Q2: Coding Ends here.******/}
     return (
@@ -208,7 +208,7 @@ function IssueRow(props) {
     );
 
     {/****** Q2: Start Coding here. Add Logic to initalize table header  ******/}
-    const tableHead = ['ID', 'Title', 'Status', 'Owner', 'Created', 'Effort', 'Due Date'];
+    const tableHead = ['ID', 'Status', 'Owner', 'Created', 'Effort', 'Due Date', 'Title'];
     {/****** Q2: Coding Ends here. ******/}
     
     
@@ -456,6 +456,7 @@ export default class IssueList extends React.Component {
     const data = await graphQLFetch(query, { issue });
     if (data) {
       this.loadData();
+      return data;
     }
     /****** Q3: Code Ends here ******/
   }
