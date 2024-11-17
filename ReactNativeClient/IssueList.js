@@ -368,8 +368,10 @@ class BlackList extends React.Component {
       // call the mutation 
       try {
         const result = await graphQLFetch(query, { owner });
-        if (result) {
-          alert(`Owner "${owner}" successfully added to blacklist!`);
+        if (result && result.addToBlacklist) {
+          alert(`Success! "${owner}" has been added to the blacklist.`);
+        } else {
+          alert(`Failed to add "${owner}" to blacklist. Please try again.`);
         }
       } catch (error) {
         alert(`Failed to add "${owner}" to blacklist: ${error.message}`);
